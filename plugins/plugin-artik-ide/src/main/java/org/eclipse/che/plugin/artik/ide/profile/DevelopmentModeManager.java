@@ -15,9 +15,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
+
 import org.eclipse.che.api.core.model.machine.Command;
 import org.eclipse.che.api.core.model.machine.Machine;
-import static org.eclipse.che.api.core.model.machine.MachineStatus.RUNNING;
 import org.eclipse.che.api.machine.shared.dto.CommandDto;
 import org.eclipse.che.api.machine.shared.dto.MachineDto;
 import org.eclipse.che.api.promises.client.Operation;
@@ -25,7 +25,6 @@ import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.api.promises.client.PromiseError;
 import org.eclipse.che.api.promises.client.callback.AsyncPromiseHelper;
-import static org.eclipse.che.api.promises.client.callback.AsyncPromiseHelper.createFromAsyncRequest;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.action.DefaultActionGroup;
 import org.eclipse.che.ide.api.app.AppContext;
@@ -37,7 +36,7 @@ import org.eclipse.che.ide.api.notification.StatusNotification;
 import org.eclipse.che.ide.commons.exception.UnmarshallerException;
 import org.eclipse.che.ide.dto.DtoFactory;
 import org.eclipse.che.ide.extension.machine.client.machine.MachineStateEvent;
-import org.eclipse.che.ide.extension.machine.client.processes.ConsolesPanelPresenter;
+import org.eclipse.che.ide.extension.machine.client.processes.panel.ProcessesPanelPresenter;
 import org.eclipse.che.ide.util.UUID;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.ide.websocket.Message;
@@ -49,11 +48,13 @@ import org.eclipse.che.ide.websocket.rest.Unmarshallable;
 import org.eclipse.che.plugin.artik.ide.ArtikExtension;
 import org.eclipse.che.plugin.artik.ide.ArtikLocalizationConstant;
 import org.eclipse.che.plugin.artik.ide.ArtikResources;
-import org.eclipse.che.plugin.artik.ide.updatesdk.OutputMessageUnmarshaller;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.eclipse.che.api.core.model.machine.MachineStatus.RUNNING;
+import static org.eclipse.che.api.promises.client.callback.AsyncPromiseHelper.createFromAsyncRequest;
 
 /**
  * Manager for switching profile at Artik devices.
@@ -70,7 +71,7 @@ public class DevelopmentModeManager implements MachineStateEvent.Handler {
     private final MessageBus                messageBus;
     private final DtoFactory                dtoFactory;
     private final ArtikResources            resources;
-    private final ConsolesPanelPresenter    consolesPanelPresenter;
+    private final ProcessesPanelPresenter   processesPanelPresenter;
     private final DialogFactory             dialogFactory;
     private final NotificationManager       notificationManager;
     private final ArtikLocalizationConstant locale;
@@ -96,7 +97,7 @@ public class DevelopmentModeManager implements MachineStateEvent.Handler {
                                   MessageBusProvider messageBusProvider,
                                   DtoFactory dtoFactory,
                                   ArtikResources resources,
-                                  ConsolesPanelPresenter consolesPanelPresenter,
+                                  ProcessesPanelPresenter processesPanelPresenter,
                                   DialogFactory dialogFactory,
                                   NotificationManager notificationManager,
                                   ArtikLocalizationConstant locale) {
@@ -107,7 +108,7 @@ public class DevelopmentModeManager implements MachineStateEvent.Handler {
         this.messageBus = messageBusProvider.getMessageBus();
         this.dtoFactory = dtoFactory;
         this.resources = resources;
-        this.consolesPanelPresenter = consolesPanelPresenter;
+        this.processesPanelPresenter = processesPanelPresenter;
         this.dialogFactory = dialogFactory;
         this.notificationManager = notificationManager;
         this.locale = locale;
@@ -262,15 +263,15 @@ public class DevelopmentModeManager implements MachineStateEvent.Handler {
                 protected void onMessageReceived(String message) {
                     if ("[STDOUT] >>> end <<<".equals(message)) {
                         messageBus.unsubscribeSilently(chanel, this);
-                        consolesPanelPresenter.printMachineOutput(machineId, "");
+                        processesPanelPresenter.printMachineOutput(machineId, "");
                         commandCallback.onSuccess(message);
                     } else {
                         if (message.startsWith("[STDOUT] ")) {
-                            consolesPanelPresenter.printMachineOutput(machineId, message.substring(9));
+                            processesPanelPresenter.printMachineOutput(machineId, message.substring(9));
                         } else if (message.startsWith("[STDERR] ")) {
-                            consolesPanelPresenter.printMachineOutput(machineId, message.substring(9), "red");
+                            processesPanelPresenter.printMachineOutput(machineId, message.substring(9), "red");
                         } else {
-                            consolesPanelPresenter.printMachineOutput(machineId, message);
+                            processesPanelPresenter.printMachineOutput(machineId, message);
                         }
                     }
                 }
@@ -296,7 +297,7 @@ public class DevelopmentModeManager implements MachineStateEvent.Handler {
                 .withType("custom")
                 .withCommandLine(cmd);
 
-        machineService.executeCommand(machineId, command, chanel);
+        machineService.executeCommand(appContext.getWorkspaceId(), machineId, command, chanel);
 
         return promise;
     }

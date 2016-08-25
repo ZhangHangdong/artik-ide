@@ -59,7 +59,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.eclipse.che.api.core.model.machine.MachineStatus.CREATING;
 import static org.eclipse.che.api.core.model.machine.MachineStatus.RUNNING;
 
 /**
@@ -699,7 +698,7 @@ public class ManageDevicesPresenter implements ManageDevicesView.ActionDelegate,
         }
         view.setConnectButtonText(null);
 
-        machineService.destroyMachine(machine.getId()).then(new Operation<Void>() {
+        machineService.destroyMachine(appContext.getWorkspaceId(), machine.getId()).then(new Operation<Void>() {
             @Override
             public void apply(Void arg) throws OperationException {
                 eventBus.fireEvent(new MachineStateEvent(machine, MachineStateEvent.MachineAction.DESTROYED));
@@ -742,7 +741,7 @@ public class ManageDevicesPresenter implements ManageDevicesView.ActionDelegate,
             return;
         }
 
-        machineService.destroyMachine(machine.getId()).then(new Operation<Void>() {
+        machineService.destroyMachine(appContext.getWorkspaceId(), machine.getId()).then(new Operation<Void>() {
             @Override
             public void apply(Void arg) throws OperationException {
                 notificationManager.notify(locale.deviceDisconnectSuccess(device.getName()), StatusNotification.Status.SUCCESS,
@@ -805,7 +804,7 @@ public class ManageDevicesPresenter implements ManageDevicesView.ActionDelegate,
         new Timer() {
             @Override
             public void run() {
-                machineService.getMachine(machineId).then(new Operation<MachineDto>() {
+                machineService.getMachine(appContext.getWorkspaceId(), machineId).then(new Operation<MachineDto>() {
                     @Override
                     public void apply(MachineDto machineDto) throws OperationException {
                         if (machineDto.getStatus() == RUNNING) {

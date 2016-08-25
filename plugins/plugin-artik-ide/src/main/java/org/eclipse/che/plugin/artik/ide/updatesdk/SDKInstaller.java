@@ -131,7 +131,7 @@ public class SDKInstaller {
                                           .withType("custom")
                                           .withCommandLine(cmd);
 
-        machineServiceClient.executeCommand(appContext.getDevMachine().getId(), command, chanel);
+        machineServiceClient.executeCommand(appContext.getWorkspaceId(), appContext.getDevMachine().getId(), command, chanel);
 
         return promise;
     }
@@ -175,7 +175,7 @@ public class SDKInstaller {
                                           .withType("custom")
                                           .withCommandLine(cmd);
 
-        machineServiceClient.executeCommand(deviceId, command, chanel);
+        machineServiceClient.executeCommand(appContext.getWorkspaceId(), deviceId, command, chanel);
 
         return promise;
     }
@@ -222,7 +222,7 @@ public class SDKInstaller {
                                           .withType("custom")
                                           .withCommandLine(cmd.replace("${sdk.version}", sdkVersion));
 
-        machineServiceClient.executeCommand(targetId, command, chanel);
+        machineServiceClient.executeCommand(appContext.getWorkspaceId(), targetId, command, chanel);
 
         return promise;
     }

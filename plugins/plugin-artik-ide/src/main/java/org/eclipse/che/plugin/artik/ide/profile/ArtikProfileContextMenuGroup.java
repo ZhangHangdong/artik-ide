@@ -13,12 +13,13 @@ package org.eclipse.che.plugin.artik.ide.profile;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import org.eclipse.che.api.core.model.machine.Machine;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.action.DefaultActionGroup;
-import org.eclipse.che.ide.extension.machine.client.processes.ConsolesPanelPresenter;
 import org.eclipse.che.ide.extension.machine.client.processes.ProcessTreeNode;
+import org.eclipse.che.ide.extension.machine.client.processes.panel.ProcessesPanelPresenter;
 import org.eclipse.che.plugin.artik.ide.ArtikLocalizationConstant;
 
 /**
@@ -29,19 +30,19 @@ import org.eclipse.che.plugin.artik.ide.ArtikLocalizationConstant;
 @Singleton
 public class ArtikProfileContextMenuGroup extends DefaultActionGroup {
 
-    private final ConsolesPanelPresenter    consolesPanelPresenter;
+    private final ProcessesPanelPresenter processesPanelPresenter;
 
     @Inject
     public ArtikProfileContextMenuGroup(ArtikLocalizationConstant locale,
-                                        ConsolesPanelPresenter consolesPanelPresenter,
+                                        ProcessesPanelPresenter processesPanelPresenter,
                                         ActionManager actionManager) {
         super(locale.artikProfileActionTitle(), true, actionManager);
-        this.consolesPanelPresenter = consolesPanelPresenter;
+        this.processesPanelPresenter = processesPanelPresenter;
     }
 
     @Override
     public void update(ActionEvent event) {
-        ProcessTreeNode processTreeNode = consolesPanelPresenter.getContextTreeNode();
+        ProcessTreeNode processTreeNode = processesPanelPresenter.getContextTreeNode();
 
         if (processTreeNode == null) {
             event.getPresentation().setEnabled(false);

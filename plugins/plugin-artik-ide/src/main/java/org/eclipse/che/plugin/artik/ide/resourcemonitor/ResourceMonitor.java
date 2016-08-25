@@ -14,6 +14,7 @@ package org.eclipse.che.plugin.artik.ide.resourcemonitor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
+
 import org.eclipse.che.api.core.model.machine.Command;
 import org.eclipse.che.api.core.model.machine.Machine;
 import org.eclipse.che.api.machine.shared.dto.CommandDto;
@@ -144,7 +145,7 @@ public class ResourceMonitor implements MachineStateEvent.Handler,
         }
 
         private void checkMonitorProcess() {
-            machineServiceClient.getProcesses(machine.getId()).then(new Operation<List<MachineProcessDto>>() {
+            machineServiceClient.getProcesses(appContext.getWorkspaceId(), machine.getId()).then(new Operation<List<MachineProcessDto>>() {
                 @Override
                 public void apply(List<MachineProcessDto> arg) throws OperationException {
                     for (MachineProcessDto processDto : arg) {
@@ -176,7 +177,7 @@ public class ResourceMonitor implements MachineStateEvent.Handler,
                         .withType("custom")
                         .withCommandLine(resources.getMonitorAllCommand().getText());
 
-                machineServiceClient.executeCommand(machine.getId(), command, channel).then(new Operation<MachineProcessDto>() {
+                machineServiceClient.executeCommand(appContext.getWorkspaceId(), machine.getId(), command, channel).then(new Operation<MachineProcessDto>() {
                     @Override
                     public void apply(MachineProcessDto processDto) throws OperationException {
                         machineProcessDto = processDto;
@@ -204,7 +205,7 @@ public class ResourceMonitor implements MachineStateEvent.Handler,
             }
 
             if (machineProcessDto != null) {
-                machineServiceClient.stopProcess(machine.getId(), machineProcessDto.getPid());
+                machineServiceClient.stopProcess(appContext.getWorkspaceId(), machine.getId(), machineProcessDto.getPid());
             }
         }
 
