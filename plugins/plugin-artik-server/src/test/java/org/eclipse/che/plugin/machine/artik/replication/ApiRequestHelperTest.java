@@ -45,7 +45,6 @@ import static org.mockito.Mockito.when;
  * Tests for {@link ApiRequestHelper}
  *
  * @author Dmitry Kuleshov
- *
  * @since 4.5
  */
 @Listeners(value = {MockitoTestNGListener.class})
@@ -111,13 +110,15 @@ public class ApiRequestHelperTest {
     @Test
     public void shouldSendProperRequestWhenGetMachines() throws IOException, ApiException {
         apiRequestHelper.getMachines();
-        verify(httpJsonRequestFactory, times(1)).fromUrl(eq(API_ENDPOINT + SEPARATOR + MACHINE_ELEMENT + "?" + WORKSPACE_ELEMENT + "="));
+        verify(httpJsonRequestFactory, times(1))
+                .fromUrl(eq(API_ENDPOINT + SEPARATOR + WORKSPACE_ELEMENT + SEPARATOR + SEPARATOR + MACHINE_ELEMENT));
     }
 
     @Test
     public void shouldSendProperRequestWhenGetMachineById() throws IOException, ApiException {
         apiRequestHelper.getMachine(MACHINE_ID);
-        verify(httpJsonRequestFactory, times(1)).fromUrl(eq(API_ENDPOINT + SEPARATOR + MACHINE_ELEMENT + SEPARATOR + MACHINE_ID));
+        verify(httpJsonRequestFactory, times(1)).fromUrl(
+                eq(API_ENDPOINT + SEPARATOR + WORKSPACE_ELEMENT + SEPARATOR + SEPARATOR + MACHINE_ELEMENT + SEPARATOR + MACHINE_ID));
     }
 
     @Test
@@ -129,7 +130,8 @@ public class ApiRequestHelperTest {
     @Test
     public void shouldSendProperRequestWhenGetScriptByMachineId() throws IOException, ApiException {
         apiRequestHelper.getScript(MACHINE_ID);
-        verify(httpJsonRequestFactory, times(1)).fromUrl(eq(API_ENDPOINT + SEPARATOR + MACHINE_ELEMENT + SEPARATOR + MACHINE_ID));
+        verify(httpJsonRequestFactory, times(1)).fromUrl(
+                eq(API_ENDPOINT + SEPARATOR + WORKSPACE_ELEMENT + SEPARATOR + SEPARATOR + MACHINE_ELEMENT + SEPARATOR + MACHINE_ID));
         verify(httpJsonRequestFactory, times(1)).fromUrl(eq(API_ENDPOINT + SEPARATOR + RECIPE_ELEMENT + SEPARATOR + RECIPE_ID));
     }
 }

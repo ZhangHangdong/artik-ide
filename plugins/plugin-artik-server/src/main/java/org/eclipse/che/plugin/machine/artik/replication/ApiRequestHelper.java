@@ -72,8 +72,7 @@ public class ApiRequestHelper {
         final String href = UriBuilder.fromUri(apiEndpoint)
                                       .path(MachineService.class)
                                       .path(MachineService.class, "getMachines")
-                                      .queryParam("workspace", WorkspaceIdProvider.getWorkspaceId())
-                                      .build()
+                                      .build(WorkspaceIdProvider.getWorkspaceId())
                                       .toString();
 
         return httpJsonRequestFactory.fromUrl(href)
@@ -104,7 +103,7 @@ public class ApiRequestHelper {
         final String href = UriBuilder.fromUri(apiEndpoint)
                                       .path(MachineService.class)
                                       .path(MachineService.class, "getMachineById")
-                                      .build(machineId)
+                                      .build(WorkspaceIdProvider.getWorkspaceId(), machineId)
                                       .toString();
 
         return httpJsonRequestFactory.fromUrl(href)
