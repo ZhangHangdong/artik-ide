@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.eclipse.che.api.core.ServerException;
-import org.eclipse.che.api.machine.server.MachineService;
+import org.eclipse.che.api.environment.server.MachineService;
 import org.eclipse.che.plugin.machine.artik.replication.shell.JsonValueHelperFactory;
 import org.eclipse.che.plugin.machine.artik.replication.shell.ShellCommandManager;
 

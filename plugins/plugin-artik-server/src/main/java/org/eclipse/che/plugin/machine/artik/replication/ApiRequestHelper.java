@@ -22,12 +22,11 @@ import org.eclipse.che.api.core.model.machine.Machine;
 import org.eclipse.che.api.core.model.machine.MachineConfig;
 import org.eclipse.che.api.core.model.machine.MachineSource;
 import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
-import org.eclipse.che.api.machine.server.MachineService;
+import org.eclipse.che.api.environment.server.MachineService;
 import org.eclipse.che.api.machine.server.recipe.RecipeService;
 import org.eclipse.che.api.machine.shared.dto.MachineDto;
 import org.eclipse.che.api.machine.shared.dto.recipe.RecipeDescriptor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;

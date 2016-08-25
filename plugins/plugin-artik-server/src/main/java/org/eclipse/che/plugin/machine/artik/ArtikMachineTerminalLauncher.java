@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.che.plugin.machine.artik;
 
-import org.eclipse.che.api.machine.server.terminal.WebsocketTerminalFilesPathProvider;
+import org.eclipse.che.api.agent.server.terminal.WebsocketTerminalFilesPathProvider;
 import org.eclipse.che.plugin.machine.ssh.SshMachineImplTerminalLauncher;
 
 import javax.inject.Inject;
